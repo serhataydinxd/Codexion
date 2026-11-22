@@ -16,32 +16,32 @@
 static int	check_config(t_config *config)
 {
 	if (config->number_of_coders < 1)
-		return (0);
+		return (1);
 	if (config->time_to_burnout < 0)
-		return (0);
+		return (1);
 	if (config->time_to_compile < 0)
-		return (0);
+		return (1);
 	if (config->time_to_debug < 0)
-		return (0);
+		return (1);
 	if (config->time_to_refactor < 0)
-		return (0);
+		return (1);
 	if (config->number_of_compiles_required < 1)
-		return (0);
+		return (1);
 	if (config->dongle_cooldown < 0)
-		return (0);
+		return (1);
 	if (!strcmp(config->scheduler, "fifo"))
 		config->scheduler = "fifo";
 	else if (!strcmp(config->scheduler, "edf"))
 		config->scheduler = "edf";
 	else
-		return (0);
-	return (1);
+		return (1);
+	return (0);
 }
 
 int	parse_args(int argc, char **argv, t_config *config)
 {
 	if (argc != 9)
-		return (0);
+		return (1);
 	config->number_of_coders = ft_atoi(argv[1]);
 	config->time_to_burnout = ft_atoi(argv[2]);
 	config->time_to_compile = ft_atoi(argv[3]);

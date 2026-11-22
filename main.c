@@ -6,21 +6,21 @@
 /*   By: seraydin@student.42istanbul.com.tr         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/19 14:59:37 by seraydin          #+#    #+#             */
-/*   Updated: 2026/11/19 19:13:24 by seraydin         ###   ########.fr       */
+/*   Updated: 2026/11/22 15:17:10 by seraydin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/config.h"
+#include "includes/dongle.h"
 #include "includes/parse.h"
 #include <pthread.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 int	main(int argc, char **argv)
 {
 	t_config	config;
 
-	if (!parse_args(argc, argv, &config))
+	if (parse_args(argc, argv, &config))
 	{
 		fprintf(stderr, "Invalid arguments\n");
 		return (1);
