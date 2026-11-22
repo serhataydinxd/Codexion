@@ -14,6 +14,7 @@
 # define DONGLE_H
 
 # include <pthread.h>
+# include <stdlib.h>
 
 typedef enum e_dongle_state
 {

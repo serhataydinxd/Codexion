@@ -15,6 +15,7 @@
 
 # include "dongle.h"
 # include <pthread.h>
+# include <stdlib.h>
 
 typedef struct s_coder
 {

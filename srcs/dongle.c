@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "../includes/dongle.h"
-#include <pthread.h>
-#include <stdlib.h>
 
 static int	init_dongle(t_dongle *dongle)
 {

@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "../includes/time.h"
-#include <sys/time.h>
 
 long long	now_ms(void)
 {

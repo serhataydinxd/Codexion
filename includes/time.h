@@ -13,6 +13,8 @@
 #ifndef TIME_H
 # define TIME_H
 
+# include <sys/time.h>
+
 long long	now_ms(void);
 
 #endif

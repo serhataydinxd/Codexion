@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "../includes/coder.h"
-#include <stdlib.h>
 
 int	init_all_coders(int count, t_dongle *arr_dongle, t_coder **arr_coder)
 {

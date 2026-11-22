@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/config.h"
 #include "../includes/parse.h"
 
 static int	check_config(t_config *config)
