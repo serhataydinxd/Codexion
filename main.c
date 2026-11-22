@@ -6,10 +6,11 @@
 /*   By: seraydin@student.42istanbul.com.tr         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/19 14:59:37 by seraydin          #+#    #+#             */
-/*   Updated: 2026/11/22 16:01:16 by seraydin         ###   ########.fr       */
+/*   Updated: 2026/11/22 17:07:31 by seraydin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "includes/coder.h"
 #include "includes/config.h"
 #include "includes/dongle.h"
 #include "includes/parse.h"
@@ -20,6 +21,7 @@ int	main(int argc, char **argv)
 {
 	t_config	config;
 	t_dongle	*dongles;
+	t_coder		*coders;
 
 	if (parse_args(argc, argv, &config))
 	{
@@ -38,8 +40,15 @@ int	main(int argc, char **argv)
 	if (init_all_dongles(config.number_of_coders, &dongles))
 	{
 		fprintf(stderr, "Dongle initialization failed\n");
-		free_all_dongles(config.number_of_coders, dongles);
 		return (1);
 	}
+	if (init_all_coders(config.number_of_coders, dongles, &coders))
+	{
+		free_all_dongles(config.number_of_coders, dongles);
+		fprintf(stderr, "Coder initialization failed\n");
+		return (1);
+	}
+	free(coders);
+	free_all_dongles(config.number_of_coders, dongles);
 	return (0);
 }
