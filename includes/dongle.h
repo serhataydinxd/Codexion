@@ -6,7 +6,7 @@
 /*   By: seraydin@student.42istanbul.com.tr         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/22 00:00:00 by seraydin          #+#    #+#             */
-/*   Updated: 2026/11/22 15:24:47 by seraydin         ###   ########.fr       */
+/*   Updated: 2026/11/22 15:56:35 by seraydin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ typedef struct s_dongle
 	long long		available_at_ms;
 }					t_dongle;
 
-int					init_dongle(t_dongle *dongle);
+int					init_all_dongles(int count, t_dongle **arr_dongle);
+void				free_all_dongles(int counter, t_dongle *all);
 
 #endif

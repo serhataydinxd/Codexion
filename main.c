@@ -6,7 +6,7 @@
 /*   By: seraydin@student.42istanbul.com.tr         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/19 14:59:37 by seraydin          #+#    #+#             */
-/*   Updated: 2026/11/22 15:17:10 by seraydin         ###   ########.fr       */
+/*   Updated: 2026/11/22 16:01:16 by seraydin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 int	main(int argc, char **argv)
 {
 	t_config	config;
+	t_dongle	*dongles;
 
 	if (parse_args(argc, argv, &config))
 	{
@@ -34,5 +35,11 @@ int	main(int argc, char **argv)
 		config.number_of_compiles_required);
 	printf("dongle_cooldown: %d\n", config.dongle_cooldown);
 	printf("scheduler: %s\n", config.scheduler);
+	if (init_all_dongles(config.number_of_coders, &dongles))
+	{
+		fprintf(stderr, "Dongle initialization failed\n");
+		free_all_dongles(config.number_of_coders, dongles);
+		return (1);
+	}
 	return (0);
 }

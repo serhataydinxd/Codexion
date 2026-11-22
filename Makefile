@@ -3,7 +3,7 @@ CC		= cc
 CFLAGS	= -Wall -Wextra -Werror
 
 
-SRCS	= main.c srcs/ft_atoi.c srcs/parse.c
+SRCS	= main.c srcs/ft_atoi.c srcs/parse.c srcs/dongle.c
 INCS	= includes
 OBJS	= $(SRCS:.c=.o)
 
