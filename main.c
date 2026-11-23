@@ -6,7 +6,7 @@
 /*   By: seraydin@student.42istanbul.com.tr         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/19 14:59:37 by seraydin          #+#    #+#             */
-/*   Updated: 2026/11/22 19:50:03 by seraydin         ###   ########.fr       */
+/*   Updated: 2026/11/23 15:37:20 by seraydin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "includes/config.h"
 #include "includes/dongle.h"
 #include "includes/parse.h"
+#include "includes/sim.h"
 #include <pthread.h>
 #include <stdio.h>
 
@@ -22,6 +23,7 @@ int	main(int argc, char **argv)
 	t_config	config;
 	t_dongle	*dongles;
 	t_coder		*coders;
+	t_sim		sim;
 
 	if (parse_args(argc, argv, &config))
 	{
@@ -48,7 +50,12 @@ int	main(int argc, char **argv)
 		fprintf(stderr, "Coder initialization failed\n");
 		return (1);
 	}
-	free(coders);
-	free_all_dongles(config.number_of_coders, dongles);
+	if (init_sim(&sim, &config, coders, dongles))
+	{
+		free_all_dongles(config.number_of_coders, dongles);
+		free(coders);
+		return (1);
+	}
+	free_sim(&sim);
 	return (0);
 }

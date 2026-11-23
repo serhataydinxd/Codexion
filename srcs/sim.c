@@ -6,7 +6,7 @@
 /*   By: seraydin@student.42istanbul.com.tr         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/22 19:13:10 by seraydin          #+#    #+#             */
-/*   Updated: 2026/11/22 19:44:55 by seraydin         ###   ########.fr       */
+/*   Updated: 2026/11/22 21:10:15 by seraydin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ void	free_sim(t_sim *sim)
 {
 	pthread_mutex_destroy(&sim->stop_mutex);
 	pthread_mutex_destroy(&sim->logger);
+	free_all_dongles(sim->config->number_of_coders, sim->dongles);
+	free(sim->coders);
 }
 
 int	init_sim(t_sim *sim, t_config *config, t_coder *coders, t_dongle *dongles)
