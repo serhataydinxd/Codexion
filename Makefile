@@ -3,7 +3,7 @@ CC		= cc
 CFLAGS	= -Wall -Wextra -Werror -pthread
 
 
-SRCS	= main.c srcs/ft_atoi.c srcs/parse.c srcs/dongle.c srcs/coder.c srcs/time.c srcs/sim.c
+SRCS	= main.c srcs/ft_atoi.c srcs/parse.c srcs/dongle.c srcs/coder.c srcs/time.c srcs/sim.c srcs/routine.c
 INCS	= includes
 OBJS	= $(SRCS:.c=.o)
 

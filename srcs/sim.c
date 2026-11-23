@@ -6,7 +6,7 @@
 /*   By: seraydin@student.42istanbul.com.tr         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/22 19:13:10 by seraydin          #+#    #+#             */
-/*   Updated: 2026/11/22 21:10:15 by seraydin         ###   ########.fr       */
+/*   Updated: 2026/11/23 18:07:02 by seraydin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,25 +15,47 @@
 
 void	free_sim(t_sim *sim)
 {
-	pthread_mutex_destroy(&sim->stop_mutex);
+	pthread_mutex_destroy(&sim->state_mutex);
 	pthread_mutex_destroy(&sim->logger);
+	pthread_cond_destroy(&sim->state_cond);
 	free_all_dongles(sim->config->number_of_coders, sim->dongles);
 	free(sim->coders);
 }
 
+static int	destroy_mutex(t_sim *sim, int which)
+{
+	if (which == 2)
+	{
+		pthread_mutex_destroy(&sim->state_mutex);
+	}
+	else if (which == 3)
+	{
+		pthread_mutex_destroy(&sim->state_mutex);
+		pthread_mutex_destroy(&sim->logger);
+	}
+	return (1);
+}
+
 int	init_sim(t_sim *sim, t_config *config, t_coder *coders, t_dongle *dongles)
 {
-	sim->sim_active = 1;
+	int	counter;
+
+	counter = 0;
+	sim->state = WAITING;
 	sim->config = config;
 	sim->coders = coders;
 	sim->dongles = dongles;
-	if (pthread_mutex_init(&sim->stop_mutex, NULL))
-		return (1);
-	if (pthread_mutex_init(&sim->logger, NULL))
+	while (counter < config->number_of_coders)
 	{
-		pthread_mutex_destroy(&sim->stop_mutex);
-		return (1);
+		coders[counter].sim = sim;
+		counter++;
 	}
+	if (pthread_mutex_init(&sim->state_mutex, NULL))
+		return (destroy_mutex(sim, 1));
+	if (pthread_mutex_init(&sim->logger, NULL))
+		return (destroy_mutex(sim, 2));
+	if (pthread_cond_init(&sim->state_cond, NULL))
+		return (destroy_mutex(sim, 3));
 	sim->sim_time_start = 0;
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: seraydin@student.42istanbul.com.tr         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/22 19:05:53 by seraydin          #+#    #+#             */
-/*   Updated: 2026/11/22 19:45:30 by seraydin         ###   ########.fr       */
+/*   Updated: 2026/11/23 17:13:47 by seraydin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,18 @@
 # include "time.h"
 # include <pthread.h>
 
+typedef enum e_sim_state
+{
+	WAITING,
+	RUNNING,
+	STOPPED
+}					t_sim_state;
+
 typedef struct s_sim
 {
-	int				sim_active;
-	pthread_mutex_t	stop_mutex;
+	t_sim_state		state;
+	pthread_mutex_t	state_mutex;
+	pthread_cond_t	state_cond;
 	t_config		*config;
 	long long		sim_time_start;
 	t_coder			*coders;

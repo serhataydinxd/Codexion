@@ -6,11 +6,13 @@
 /*   By: seraydin@student.42istanbul.com.tr         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/22 16:35:15 by seraydin          #+#    #+#             */
-/*   Updated: 2026/11/22 17:02:15 by seraydin         ###   ########.fr       */
+/*   Updated: 2026/11/23 18:47:20 by seraydin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/coder.h"
+#include "../includes/sim.h"
+#include <pthread.h>
 
 int	init_all_coders(int count, t_dongle *arr_dongle, t_coder **arr_coder)
 {
@@ -31,5 +33,25 @@ int	init_all_coders(int count, t_dongle *arr_dongle, t_coder **arr_coder)
 		counter++;
 	}
 	*arr_coder = all;
+	return (0);
+}
+
+int	set_last_comp(t_sim *sim)
+{
+	int			counter;
+	long long	time_now;
+
+	counter = 0;
+	pthread_mutex_lock(&sim->state_mutex);
+	time_now = now_ms();
+	sim->sim_time_start = time_now;
+	while (counter < sim->config->number_of_coders)
+	{
+		sim->coders[counter].last_compile_start = time_now;
+		counter++;
+	}
+	sim->state = RUNNING;
+	pthread_cond_broadcast(&sim->state_cond);
+	pthread_mutex_unlock(&sim->state_mutex);
 	return (0);
 }
