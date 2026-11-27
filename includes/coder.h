@@ -17,7 +17,7 @@
 # include <pthread.h>
 # include <stdlib.h>
 
-struct s_sim;
+struct	s_sim;
 
 typedef struct s_coder
 {

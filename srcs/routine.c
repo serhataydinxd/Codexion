@@ -6,13 +6,29 @@
 /*   By: seraydin@student.42istanbul.com.tr         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/23 15:49:26 by seraydin          #+#    #+#             */
-/*   Updated: 2026/11/23 19:30:49 by seraydin         ###   ########.fr       */
+/*   Updated: 2026/11/27 12:16:21 by seraydin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/logging.h"
 #include "../includes/routines.h"
 #include <pthread.h>
+
+static void	take_single_dongle(t_coder *coder)
+{
+	t_dongle	*dongle;
+
+	dongle = coder->dongle_left;
+	pthread_mutex_lock(&dongle->mutex);
+	if (dongle->state == AVAILABLE && now_ms() >= dongle->available_at_ms)
+	{
+		dongle->state = TAKEN;
+		pthread_mutex_unlock(&dongle->mutex);
+		log_event(coder, "has taken a dongle");
+		return ;
+	}
+	pthread_mutex_unlock(&dongle->mutex);
+}
 
 void	*coder_routine(void *arg)
 {
@@ -27,8 +43,13 @@ void	*coder_routine(void *arg)
 		pthread_mutex_unlock(&coder->sim->state_mutex);
 		return (0);
 	}
-	log_event(coder, "idfk");
 	pthread_mutex_unlock(&coder->sim->state_mutex);
+	if (coder->dongle_left == coder->dongle_right)
+	{
+		take_single_dongle(coder);
+		return (0);
+	}
+	log_event(coder, "idfk");
 	return (0);
 }
 

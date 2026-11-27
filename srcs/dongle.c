@@ -12,15 +12,19 @@
 
 #include "../includes/dongle.h"
 
-static int	init_dongle(t_dongle *dongle)
+static int	init_dongle(t_dongle *dongle, const char *scheduler, int id)
 {
-	if (!pthread_mutex_init(&dongle->mutex, NULL))
+	if (pthread_mutex_init(&dongle->mutex, NULL))
+		return (1);
+	if (init_dongle_heap(&dongle->requests, scheduler))
 	{
-		dongle->state = AVAILABLE;
-		dongle->available_at_ms = 0;
-		return (0);
+		pthread_mutex_destroy(&dongle->mutex);
+		return (1);
 	}
-	return (1);
+	dongle->state = AVAILABLE;
+	dongle->id = id;
+	dongle->available_at_ms = 0;
+	return (0);
 }
 
 void	free_all_dongles(int counter, t_dongle *all)
@@ -31,12 +35,13 @@ void	free_all_dongles(int counter, t_dongle *all)
 	while (a < counter)
 	{
 		pthread_mutex_destroy(&all[a].mutex);
+		free(all[a].requests.items);
 		a++;
 	}
 	free(all);
 }
 
-int	init_all_dongles(int count, t_dongle **arr_dongle)
+int	init_all_dongles(int count, t_dongle **arr_dongle, const char *scheduler)
 {
 	t_dongle	*all;
 	int			counter;
@@ -47,7 +52,7 @@ int	init_all_dongles(int count, t_dongle **arr_dongle)
 	counter = 0;
 	while (counter < count)
 	{
-		if (init_dongle(&all[counter]))
+		if (init_dongle(&all[counter], scheduler, counter))
 		{
 			free_all_dongles(counter, all);
 			return (1);

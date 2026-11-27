@@ -28,16 +28,18 @@ typedef enum e_sim_state
 
 typedef struct s_sim
 {
-	t_sim_state		state;
-	pthread_mutex_t	state_mutex;
-	pthread_cond_t	state_cond;
-	t_config		*config;
-	long long		sim_time_start;
-	t_coder			*coders;
-	t_dongle		*dongles;
-	pthread_mutex_t	logger;
+	t_sim_state			state;
+	pthread_mutex_t		state_mutex;
+	pthread_cond_t		state_cond;
+	t_config			*config;
+	long long			sim_time_start;
+	t_coder				*coders;
+	t_dongle			*dongles;
+	pthread_mutex_t		logger;
+	unsigned long long	next_arrival;
 }					t_sim;
 void				free_sim(t_sim *sim);
+unsigned long long	next_request_seq(t_sim *sim);
 int					init_sim(t_sim *sim, t_config *config, t_coder *coders,
 						t_dongle *dongles);
 

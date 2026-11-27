@@ -32,7 +32,7 @@ int	main(int argc, char **argv)
 		fprintf(stderr, "Invalid arguments\n");
 		return (1);
 	}
-	if (init_all_dongles(config.number_of_coders, &dongles))
+	if (init_all_dongles(config.number_of_coders, &dongles, config.scheduler))
 	{
 		fprintf(stderr, "Dongle initialization failed\n");
 		return (1);

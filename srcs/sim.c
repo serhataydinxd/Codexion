@@ -22,6 +22,16 @@ void	free_sim(t_sim *sim)
 	free(sim->coders);
 }
 
+unsigned long long	next_request_seq(t_sim *sim)
+{
+	unsigned long long	sequence;
+
+	pthread_mutex_lock(&sim->state_mutex);
+	sequence = sim->next_arrival++;
+	pthread_mutex_unlock(&sim->state_mutex);
+	return (sequence);
+}
+
 static int	destroy_mutex(t_sim *sim, int which)
 {
 	if (which == 2)
@@ -42,6 +52,7 @@ int	init_sim(t_sim *sim, t_config *config, t_coder *coders, t_dongle *dongles)
 
 	counter = 0;
 	sim->state = WAITING;
+	sim->next_arrival = 0;
 	sim->config = config;
 	sim->coders = coders;
 	sim->dongles = dongles;
