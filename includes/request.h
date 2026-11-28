@@ -25,5 +25,7 @@ typedef struct s_request
 int						comp_request(t_request *first, t_request *second,
 							const char *schedular);
 int						submit_requests(struct s_coder *coder);
+int						try_take_pair(struct s_coder *coder);
+void					release_pair(struct s_coder *coder);
 
 #endif

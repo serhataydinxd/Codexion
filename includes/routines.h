@@ -20,5 +20,7 @@
 void	*coder_routine(void *arg);
 int		create_threads(t_coder *coders, int count);
 int		join_threads(t_coder *coders, int count);
+int		compile_once(t_coder *coder);
+void	run_cycles(t_coder *coder);
 
 #endif

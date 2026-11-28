@@ -49,7 +49,7 @@ void	*coder_routine(void *arg)
 		take_single_dongle(coder);
 		return (0);
 	}
-	log_event(coder, "idfk");
+	run_cycles(coder);
 	return (0);
 }
 
