@@ -25,6 +25,7 @@ typedef struct s_heap
 
 int				init_dongle_heap(t_heap *heap, const char *scheduler);
 int				insert_heap(t_heap *heap, t_request *request);
+int				remove_request(t_heap *heap, struct s_coder *coder);
 int				pop_heap(t_heap *heap, t_request *out);
 
 #endif

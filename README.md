@@ -8,7 +8,7 @@ Codexion is a C simulation of coders sharing USB dongles in a circular workspace
 Each coder runs in a thread and cycles through compiling, debugging, and
 refactoring. Compiling requires both adjacent dongles, which become unavailable
 for a cooldown period after release. A custom priority queue on each dongle
-arbitrates requests using FIFO or earliest deadline first (EDF).
+arbitrates ready requests using FIFO or earliest deadline first (EDF).
 
 The simulation stops when every coder completes the required number of compiles
 or when any coder burns out. Burnout is measured from the start of the coder's
@@ -39,16 +39,22 @@ dongle acquisition, compiling, debugging, refactoring, and burnout.
 
 ## Blocking cases handled
 
-- **Deadlock:** dongle mutexes are always locked in increasing dongle ID order,
-  breaking Coffman's circular-wait condition. A coder claims both dongles together
-  and never holds one dongle while waiting for the other. Mutex protection and
-  exclusive ownership preserve mutual exclusion.
-- **Starvation:** per-dongle queues prevent requests from bypassing higher-priority
-  requests. EDF prioritizes the earliest burnout deadline, with deterministic FIFO
-  ties. These ordering rules alone do not establish the subject's full EDF
-  liveness guarantee under all feasible parameters; further contention testing
-  and scheduling analysis are still needed. Impossible parameters can cause
-  burnout regardless of request ordering.
+- **Deadlock:** a shared scheduler mutex serializes queue insertion, pair
+  acquisition, and pair release. A coder claims both dongles together and never
+  holds one dongle while waiting for the other. The scheduler mutex is released
+  before compiling or waiting.
+- **Starvation prevention:** FIFO arrival order and EDF deadlines determine queue
+  priority among requests whose two dongles are available. A coder may bypass a
+  queue leader only while that leader's other dongle is taken or cooling down.
+  Bypass also requires the requesting coder to have an equal or earlier burnout
+  deadline and no more completed compiles than the queue leader. The compile
+  count also distinguishes first requests from retries with identical timestamps.
+  Each queued request may be bypassed at most once per dongle; after that it
+  reserves its queue priority until served. This prevents repeated overtaking
+  while its other dongle is busy. It retains its deadline and arrival sequence. This avoids head-of-line blocking
+  by requests that cannot currently proceed. It intentionally relaxes strict
+  per-dongle FIFO/EDF ordering and does not prove liveness for every feasible
+  parameter set. Impossible parameters can still cause burnout.
 - **Cooldown:** each released dongle receives an availability timestamp; acquisition
   checks both dongles against these timestamps.
 - **Single coder:** the coder takes the sole dongle but cannot compile, so the
@@ -61,11 +67,12 @@ dongle acquisition, compiling, debugging, refactoring, and burnout.
 
 ## Thread synchronization mechanisms
 
-Each dongle has a `pthread_mutex_t` protecting its state, cooldown timestamp, and
-request queue. Queue insertion and pair acquisition lock both adjacent dongles,
-so competing coders cannot claim the same resource or modify its queue together.
-The queues hold at most two requests because only the two adjacent coders can
-request a dongle.
+A shared scheduler mutex protects all multi-coder dongle states, cooldown
+timestamps, and request queues. It lets pair acquisition inspect a competing
+coder's other dongle atomically with granting the pair. Only the granted coder's
+requests are removed; a bypassed request remains queued. Each queue holds at most
+two requests because only the two adjacent coders can request a dongle. Dongles
+also have individual mutexes, used by the single-coder acquisition path.
 
 A shared state mutex protects simulation state, compile counters, compile start
 updates, and the request sequence counter. For example, the monitor reads compile

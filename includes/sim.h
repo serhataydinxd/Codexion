@@ -36,6 +36,7 @@ typedef struct s_sim
 	t_coder				*coders;
 	t_dongle			*dongles;
 	pthread_mutex_t		logger;
+	pthread_mutex_t		scheduler_mutex;
 	unsigned long long	next_arrival;
 }					t_sim;
 void				free_sim(t_sim *sim);

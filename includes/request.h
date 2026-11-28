@@ -20,6 +20,8 @@ typedef struct s_request
 	struct s_coder		*coder;
 	unsigned long long	arrival;
 	long long			deadline;
+	int					bypassed;
+	int					compiles;
 }						t_request;
 
 int						comp_request(t_request *first, t_request *second,

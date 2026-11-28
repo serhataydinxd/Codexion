@@ -53,6 +53,8 @@ static int	enqueue_pair(t_coder *coder, t_dongle *first, t_dongle *second)
 		|| has_request(&second->requests, coder))
 		return (1);
 	request.coder = coder;
+	request.bypassed = 0;
+	request.compiles = coder->compiles;
 	request.arrival = next_request_seq(coder->sim);
 	request.deadline = coder->last_compile_start
 		+ coder->sim->config->time_to_burnout;
@@ -71,15 +73,8 @@ int	submit_requests(t_coder *coder)
 	second = coder->dongle_right;
 	if (first == second)
 		return (1);
-	if (first->id > second->id)
-	{
-		first = coder->dongle_right;
-		second = coder->dongle_left;
-	}
-	pthread_mutex_lock(&first->mutex);
-	pthread_mutex_lock(&second->mutex);
+	pthread_mutex_lock(&coder->sim->scheduler_mutex);
 	status = enqueue_pair(coder, first, second);
-	pthread_mutex_unlock(&second->mutex);
-	pthread_mutex_unlock(&first->mutex);
+	pthread_mutex_unlock(&coder->sim->scheduler_mutex);
 	return (status);
 }

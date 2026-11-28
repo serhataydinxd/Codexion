@@ -58,3 +58,21 @@ int	insert_heap(t_heap *heap, t_request *request)
 	else
 		return (1);
 }
+
+int	remove_request(t_heap *heap, struct s_coder *coder)
+{
+	int	i;
+
+	i = 0;
+	while (i < heap->size)
+	{
+		if (heap->items[i].coder == coder)
+		{
+			heap->size--;
+			heap->items[i] = heap->items[heap->size];
+			return (0);
+		}
+		i++;
+	}
+	return (1);
+}
