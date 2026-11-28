@@ -12,6 +12,7 @@
 
 #include "../includes/logging.h"
 #include "../includes/routines.h"
+#include "../includes/wait.h"
 #include <pthread.h>
 
 static void	take_single_dongle(t_coder *coder)
@@ -25,6 +26,11 @@ static void	take_single_dongle(t_coder *coder)
 		dongle->state = TAKEN;
 		pthread_mutex_unlock(&dongle->mutex);
 		log_event(coder, "has taken a dongle");
+		while (!wait_ms(coder->sim, 1))
+			;
+		pthread_mutex_lock(&dongle->mutex);
+		dongle->state = AVAILABLE;
+		pthread_mutex_unlock(&dongle->mutex);
 		return ;
 	}
 	pthread_mutex_unlock(&dongle->mutex);

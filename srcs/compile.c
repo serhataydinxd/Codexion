@@ -28,28 +28,41 @@ static int	wait_for_pair(t_coder *coder)
 	return (1);
 }
 
+static int	start_compile(t_coder *coder)
+{
+	long long	now;
+
+	pthread_mutex_lock(&coder->sim->state_mutex);
+	now = now_ms();
+	if (coder->sim->state != RUNNING || now - coder->last_compile_start
+		>= coder->sim->config->time_to_burnout)
+	{
+		pthread_mutex_unlock(&coder->sim->state_mutex);
+		return (1);
+	}
+	coder->last_compile_start = now;
+	pthread_mutex_unlock(&coder->sim->state_mutex);
+	log_event(coder, "has taken a dongle");
+	log_event(coder, "has taken a dongle");
+	log_event(coder, "is compiling");
+	return (0);
+}
+
 int	compile_once(t_coder *coder)
 {
 	int	interrupted;
 
 	if (wait_for_pair(coder))
 		return (1);
-	pthread_mutex_lock(&coder->sim->state_mutex);
-	if (coder->sim->state == STOPPED)
+	if (start_compile(coder))
 	{
-		pthread_mutex_unlock(&coder->sim->state_mutex);
 		release_pair(coder);
 		return (1);
 	}
-	coder->last_compile_start = now_ms();
-	pthread_mutex_unlock(&coder->sim->state_mutex);
-	log_event(coder, "has taken a dongle");
-	log_event(coder, "has taken a dongle");
-	log_event(coder, "is compiling");
 	interrupted = wait_ms(coder->sim, coder->sim->config->time_to_compile);
 	release_pair(coder);
 	pthread_mutex_lock(&coder->sim->state_mutex);
-	if (!interrupted)
+	if (!interrupted && coder->sim->state == RUNNING)
 		coder->compiles++;
 	pthread_mutex_unlock(&coder->sim->state_mutex);
 	return (interrupted);

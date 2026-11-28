@@ -22,5 +22,8 @@ int		create_threads(t_coder *coders, int count);
 int		join_threads(t_coder *coders, int count);
 int		compile_once(t_coder *coder);
 void	run_cycles(t_coder *coder);
+void	*monitor_routine(void *arg);
+void	stop_sim(t_sim *sim);
+int		run_sim(t_sim *sim);
 
 #endif
