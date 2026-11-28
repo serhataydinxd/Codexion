@@ -5,7 +5,10 @@ CFLAGS	= -Wall -Wextra -Werror -pthread
 
 SRCS	= main.c srcs/ft_atoi.c srcs/parse.c srcs/dongle.c srcs/coder.c \
 				srcs/time.c srcs/sim.c srcs/routine.c srcs/logging.c srcs/heap.c srcs/request.c srcs/take_pair.c srcs/wait.c srcs/compile.c srcs/monitor.c
-INCS	= includes
+INCS	= includes/coder.h includes/config.h includes/dongle.h \
+		includes/heap.h includes/logging.h includes/parse.h \
+		includes/request.h includes/routines.h includes/sim.h \
+		includes/time.h includes/wait.h
 OBJS	= $(SRCS:.c=.o)
 
 
